@@ -15,8 +15,6 @@ Tenantify.setTenantCollection = function(collection, field) {
 }
 
 Tenantify.collection = function(collection, options) {
-	console.log(collection._name);
-
 	var defaults = {
 		tenantField: Tenantify._tenantField,
 		denyForNonTenant: true
@@ -26,21 +24,7 @@ Tenantify.collection = function(collection, options) {
 
 	tenantifyOptions = _.extend(defaults,tenantifyOptions);
 
-	if(collection._isInsecure()) {
-		collection.allow = {
-			insert: function() { return true; },
-			update: function() { return true; },
-			remove: function() { return true; }
-		}
-	}
-
-	if(!tenantifyOptions.tenantField) {
-		tenantifyOptions.tenantField = Tenantify._tenantField;
-	}
-
-	collection.before.find(function(userId, selector, options) {
-		if(typeof(selector) === 'undefined') selector = {};
-		
+	collection.before.find(function(userId, selector, options) {		
 		selector = selector || {};
 		options = options || {};
 		
