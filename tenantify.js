@@ -28,12 +28,22 @@ Tenantify.collection = function(collection, options) {
 		selector = selector || {};
 		options = options || {};
 		
-		var tenantId = Tenantify.getTenantId();
+		var tenantId = Tenantify._currentTenantId || Tenantify.getTenantId();
 
 		if(tenantId) {
 			selector[tenantifyOptions.tenantField] = tenantId;
 		} else if(tenantifyOptions.denyForNonTenant) {
-			selector['_team_id'] = 'disallowed';
+			selector[tenantifyOptions.tenantField] = 'disallowed';
+		}
+	});
+
+	collection.before.insert(function(userId, doc) {	
+		var tenantId = Tenantify._currentTenantId || Tenantify.getTenantId();
+
+		if(tenantId) {
+			doc[tenantifyOptions.tenantField] = tenantId;
+		} else if(tenantifyOptions.denyForNonTenant) {
+			doc[tenantifyOptions.tenantField] = 'disallowed';
 		}
 	});
 }
@@ -66,6 +76,10 @@ Tenantify.getTenantId = function(method) {
 	}
 
 	return false;
+}
+
+Tenantify.setTenantId = function(id) {
+	Tenantify._currentTenantId = id;
 }
 
 Tenantify.onReady = function(fn) {
@@ -103,6 +117,12 @@ if(Meteor.isServer) {
 	});
 }
 
+Meteor.methods({
+	'flipace:tenantify/setTenantId': function(id) {
+		Tenantify.setTenantId(id);
+	}
+});
+
 /**
  * Common functions
  */
@@ -115,9 +135,13 @@ function splitHostname(hostname) {
     if(urlParts) {
 	    result.domain = urlParts[1];
 	    result.type = urlParts[2];
-	    result.subdomain = hostname.replace(result.domain + '.' + result.type, '').slice(0, -1);;
+	    result.subdomain = hostname.replace(result.domain + '.' + result.type, '').slice(0, -1);
+
+	    if(result.subdomain.indexOf('.') > -1) {
+	    	result.subdomain = result.subdomain.split('.')[0];
+	    }
 	}
 
-	return result;
 
+	return result;
 }
