@@ -1,3 +1,7 @@
+// constants
+TENANTIFY_TYPE_SUBDOMAIN = 'subdomain';
+
+// tenantify global
 Tenantify = {};
 
 Tenantify._headers = false;
@@ -9,6 +13,7 @@ Tenantify.tenantIdentifyMethod = TENANTIFY_TYPE_SUBDOMAIN;
 Tenantify._readyCallbacks = [];
 Tenantify._currentTenantId = false;
 
+// functions
 Tenantify.setTenantCollection = function(collection, field) {
 	this._tenantCollection = collection;
 	this._tenantField = field;
@@ -84,37 +89,6 @@ Tenantify.setTenantId = function(id) {
 
 Tenantify.onReady = function(fn) {
 	this._readyCallbacks.push(fn);
-}
-
-if(Meteor.isServer) {
-	Meteor.methods({
-		'flipace:tenantify/setHeaders': function(connection) {
-			var runCallbacks = true;
-
-			// if the new host is different than the previous one, we
-			// reset the tenantId
-			if(Tenantify._headers.host != connection.httpHeaders) {
-				Tenantify._currentTenantId = false;
-			}
-
-			// save the headers for tenantify
-			Tenantify._headers = connection.httpHeaders;
-
-			if(runCallbacks) {
-				var removeFromCallbacks = [];
-
-				_.each(Tenantify._readyCallbacks, function(fn, i) {
-					fn();
-
-					removeFromCallbacks.push(i);
-				});
-			}
-		}
-	});
-
-	Meteor.onConnection(function(conn) {
-	    Meteor.call('flipace:tenantify/setHeaders', conn)
-	});
 }
 
 Meteor.methods({

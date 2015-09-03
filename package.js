@@ -13,10 +13,11 @@ Package.onUse(function(api) {
   api.use([
     'underscore',
     'gadicohen:headers',
-    'matb33:collection-hooks'
+    'matb33:collection-hooks',
+    'coffeescript'
   ]);
   
-  api.addFiles('constants.js');
+  api.addFiles('server.coffee', 'server');
   api.addFiles('tenantify.js');
 
   api.export('Tenantify');
