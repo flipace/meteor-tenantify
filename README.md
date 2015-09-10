@@ -41,14 +41,12 @@ For example:
 	...    |  Client 1  |  client1
 	...    |  Client 2  |  client2
 
-To *"tenantify"* a collection, you simple use this command once on the server:
+To *"tenantify"* a collection, you simple use this command once on the server or the client - depending on your needs.
 
-	if(Meteor.isServer) {
-		Tenantify.collection(Projects, {
-			tenantField: '_team_id',
-			denyForNonTenant: false (default: true)
-		});
-	}
+	Tenantify.collection(Projects, {
+		tenantField: '_team_id',
+		denyForNonTenant: true
+	});
 
 This adds the needed hooks so, every time you use Projects.find({}) afterwards, it's going to automatically add the appropriate tenant clause to the query.
 
