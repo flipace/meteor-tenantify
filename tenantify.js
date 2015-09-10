@@ -10,7 +10,6 @@ Tenantify._tenantField = '_tenantId'; // the tenant field name in the tenant col
 
 Tenantify.tenantIdentifyMethod = TENANTIFY_TYPE_SUBDOMAIN;
 
-Tenantify._readyCallbacks = [];
 Tenantify._currentTenantId = false;
 
 // functions
@@ -29,10 +28,10 @@ Tenantify.collection = function(collection, options) {
 
 	tenantifyOptions = _.extend(defaults,tenantifyOptions);
 
-	collection.before.find(function(userId, selector, options) {		
+	collection.before.find(function(userId, selector, options) {
 		selector = selector || {};
 		options = options || {};
-		
+
 		var tenantId = Tenantify._currentTenantId || Tenantify.getTenantId();
 
 		if(tenantId) {
@@ -42,7 +41,7 @@ Tenantify.collection = function(collection, options) {
 		}
 	});
 
-	collection.before.insert(function(userId, doc) {	
+	collection.before.insert(function(userId, doc) {
 		var tenantId = Tenantify._currentTenantId || Tenantify.getTenantId();
 
 		if(tenantId) {
@@ -60,14 +59,14 @@ Tenantify.getTenantId = function(method) {
 
 	// get the tenant id by using one of the given methods
 	switch(this.tenantIdentifyMethod) {
-		case TENANTIFY_TYPE_SUBDOMAIN: 
+		case TENANTIFY_TYPE_SUBDOMAIN:
 			if(this._headers) {
 				var host = splitHostname(this._headers.host);
 
 				if(typeof(host.subdomain) !== undefined && host.subdomain != '') {
 					// it's a subdomain. let's find the tenant id
 					var tenantData = Tenantify._tenantCollection.findOne({ subdomain: host.subdomain });
-					
+
 					if(tenantData) {
 						Tenantify._currentTenantId = tenantData._id;
 						return tenantData._id;
@@ -75,27 +74,13 @@ Tenantify.getTenantId = function(method) {
 				}
 			}
 			break;
-		default: 
+		default:
 			return false;
 			break;
 	}
 
 	return false;
 }
-
-Tenantify.setTenantId = function(id) {
-	Tenantify._currentTenantId = id;
-}
-
-Tenantify.onReady = function(fn) {
-	this._readyCallbacks.push(fn);
-}
-
-Meteor.methods({
-	'flipace:tenantify/setTenantId': function(id) {
-		Tenantify.setTenantId(id);
-	}
-});
 
 /**
  * Common functions
