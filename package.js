@@ -1,6 +1,6 @@
 Package.describe({
   name: 'flipace:tenantify',
-  version: '0.1.0',
+  version: '0.1.1',
   summary: 'easily setup multi tenancy for your meteor app',
   git: 'https://github.com/flipace/meteor-tenantify',
   documentation: 'README.md'
