@@ -11,7 +11,7 @@ Package.onUse(function(api) {
 
     api.use([
         'underscore',
-        'matb33:collection-hooks'
+        'matb33:collection-hooks@0.8.1'
     ]);
 
     api.addFiles('tenantify.js');
