@@ -2,10 +2,14 @@
 tenantify
 =========
 
-tenantify is a meteor package which provides support
-for (at least) subdomain multi-tenancy within one mongo database.
+tenantify is a meteor package which allows you to easily
+limit collection queries based on a given key-value pair in each document.
 
-*i would like to extend its functionality to support multi-db setup too*
+This allows you to easily setup multi-tenancy.
+
+***WARNING: v1.0.0 removed all subdomain/header specific code so tenantify is now
+only a query limiter package. If you want to have subdomain multi-tenancy, you'll have to
+implement the functionality for handling different subdomains on your own now.***
 
 Requirements
 -------------
@@ -14,17 +18,6 @@ tenantify is only tested with nginx.
 
 Configuration
 -------------
-
-Setup a nginx server to proxy_pass to your meteor application.
-
-You can do this like that:
-
-    proxy_pass http://localhost:3000;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-    proxy_set_header Host $host;
-
 tenantify uses a very simple and straightforward way
 to define collections which should be "tenantified".
 
@@ -34,7 +27,7 @@ First, tell tenantify in which collection you save your tenant ids. This is stra
 
 `Teams` is the collection in which I have all my tenants. The `_id` field should be used as the tenant id.
 
-When using the **subdomain-based** tenant system, you'll need to have a field with the key 'subdomain' which contains the `String` value of the subdomain for this tenant.
+When using the **subdomain-based** tenant system, you'll want to have a field with the key 'subdomain' which contains the `String` value of the subdomain for this tenant.
 
 For example:
 

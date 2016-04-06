@@ -1,6 +1,6 @@
 Package.describe({
   name: 'flipace:tenantify',
-  version: '0.1.1',
+  version: '1.0.0',
   summary: 'easily setup multi tenancy for your meteor app',
   git: 'https://github.com/flipace/meteor-tenantify',
   documentation: 'README.md'
@@ -11,12 +11,9 @@ Package.onUse(function(api) {
 
     api.use([
         'underscore',
-        'gadicohen:headers',
         'matb33:collection-hooks'
     ]);
 
-    api.addFiles('server.js', 'server');
-    api.addFiles('client.js', 'client');
     api.addFiles('tenantify.js');
 
     api.export('Tenantify');
